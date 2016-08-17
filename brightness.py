@@ -60,8 +60,8 @@ class BrightnessScale:
         #Find display monitor
         monitor = subprocess.check_output("xrandr -q | grep ' connected' | cut -d ' ' -f1", shell=True)
         if(monitor != ""):
-            monitor = monitor.split('\n')[0]
-        return monitor
+            monitor = monitor.split('\n')
+        return [x for x in monitor if x]
 
     def getCurrentBrightness(self):
         #Find current brightness
@@ -76,8 +76,9 @@ class BrightnessScale:
     def scale_moved(self, event):
         #Change brightness
         newBrightness = float(self.scale.get_value())/100
-        cmd = "xrandr --output %s --brightness %.2f" % (self.monitor, newBrightness)
-        cmdStatus = subprocess.check_output(cmd, shell=True)
+        for m in self.monitor:
+			cmd = "xrandr --output %s --brightness %.2f" % (m, newBrightness)
+			cmdStatus = subprocess.check_output(cmd, shell=True)
 
 if __name__ == "__main__":
     # new instance of BrightnessScale
